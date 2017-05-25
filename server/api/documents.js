@@ -156,6 +156,24 @@ router.post('documents.create', auth(), async ctx => {
   };
 });
 
+router.post('documents.star', auth(), async ctx => {
+  const { id } = ctx.body;
+  const user = ctx.state.user;
+  ctx.assertPresent(id, 'id is required');
+
+  const document = await getDocumentForId(id);
+  await document.star(user.id);
+});
+
+router.post('documents.unstar', auth(), async ctx => {
+  const { id } = ctx.body;
+  const user = ctx.state.user;
+  ctx.assertPresent(id, 'id is required');
+
+  const document = await getDocumentForId(id);
+  await document.unstar(user.id);
+});
+
 router.post('documents.update', auth(), async ctx => {
   const { id, title, text } = ctx.body;
   ctx.assertPresent(id, 'id is required');

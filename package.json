@@ -28,7 +28,7 @@
   },
   "jest": {
     "verbose": false,
-    "testPathDirs": [
+    "roots": [
       "frontend"
     ],
     "moduleNameMapper": {
@@ -177,7 +177,7 @@
     "flow-bin": "^0.45.0",
     "identity-obj-proxy": "^3.0.0",
     "ignore-loader": "0.1.1",
-    "jest-cli": "^15.1.1",
+    "jest-cli": "^19.0.0",
     "koa-webpack-dev-middleware": "1.4.5",
     "koa-webpack-hot-middleware": "1.0.3",
     "lint-staged": "^3.4.0",

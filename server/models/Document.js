@@ -6,6 +6,7 @@ import { convertToMarkdown } from '../../frontend/utils/markdown';
 import { truncateMarkdown } from '../utils/truncate';
 import User from './User';
 import Revision from './Revision';
+import Star from './Star';
 
 slug.defaults.mode = 'rfc3986';
 const slugify = text =>
@@ -97,6 +98,18 @@ const Document = sequelize.define(
       getUrl() {
         const slugifiedTitle = slugify(this.title);
         return `/d/${slugifiedTitle}-${this.urlId}`;
+      },
+      async star(userId) {
+        await Star.create({
+          userId,
+          documentId: this.id,
+        });
+      },
+      async unstar(userId) {
+        await Star.destroy({
+          userId,
+          documentId: this.id,
+        });
       },
     },
   }
