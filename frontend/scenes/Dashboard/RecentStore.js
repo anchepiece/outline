@@ -3,34 +3,28 @@ import { observable, action, runInAction } from 'mobx';
 import invariant from 'invariant';
 import { client } from 'utils/ApiClient';
 import type { Pagination, Document } from 'types';
-import Collection from 'models/Collection';
 
-type Options = {
-  team: Object,
-};
-
-class DashboardStore {
+class RecentStore {
   team: Object;
 
-  @observable recent: Array<Document>;
-  @observable collections: Array<Collection>;
+  @observable documents: Array<Document>;
   @observable pagination: Pagination;
   @observable isFetching: boolean = true;
 
   /* Actions */
 
-  @action fetchCollections = async () => {
+  @action fetchDocuments = async () => {
     this.isFetching = true;
 
     try {
-      const res = await client.post('/collections.list', { id: this.team.id });
+      const res = await client.get('/documents.recent');
       invariant(
         res && res.data && res.pagination,
         'API response should be available'
       );
       const { data, pagination } = res;
-      runInAction('fetchCollections', () => {
-        this.collections = data.map(collection => new Collection(collection));
+      runInAction('fetchDocuments', () => {
+        this.documents = data;
         this.pagination = pagination;
       });
     } catch (e) {
@@ -39,10 +33,9 @@ class DashboardStore {
     this.isFetching = false;
   };
 
-  constructor(options: Options) {
-    this.team = options.team;
-    this.fetchCollections();
+  constructor() {
+    this.fetchDocuments();
   }
 }
 
-export default DashboardStore;
+export default RecentStore;

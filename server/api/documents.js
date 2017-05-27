@@ -74,10 +74,30 @@ router.post('documents.search', auth(), async ctx => {
   ctx.assertPresent(query, 'query is required');
 
   const user = await ctx.state.user;
-
   const documents = await Document.searchForUser(user, query);
 
   const data = [];
+  await Promise.all(
+    documents.map(async document => {
+      data.push(
+        await presentDocument(ctx, document, {
+          includeCollection: true,
+          includeCollaborators: true,
+        })
+      );
+    })
+  );
+
+  ctx.body = {
+    pagination: ctx.state.pagination,
+    data,
+  };
+});
+
+router.post('documents.recent', auth(), async ctx => {
+  const documents = await Document.findAll({ limit: 10 });
+  const data = [];
+
   await Promise.all(
     documents.map(async document => {
       data.push(

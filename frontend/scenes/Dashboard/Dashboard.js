@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { Flex } from 'reflexbox';
 
 import DashboardStore from './DashboardStore';
-
+import RecentStore from './RecentStore';
 import Layout from 'components/Layout';
 import Collection from 'components/Collection';
 import PreviewLoading from 'components/PreviewLoading';
@@ -22,13 +22,14 @@ type Props = {
 class Dashboard extends React.Component {
   props: Props;
   store: DashboardStore;
+  recent: RecentStore;
 
   constructor(props: Props) {
     super(props);
 
+    this.recent = new RecentStore();
     this.store = new DashboardStore({
       team: props.user.team,
-      router: props.router,
     });
   }
 

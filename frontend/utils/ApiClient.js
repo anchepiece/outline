@@ -45,7 +45,6 @@ class ApiClient {
     }
 
     // Construct request
-    // $FlowFixMe don't care much about this right now
     const request = fetch(this.baseUrl + (modifiedPath || path), {
       method,
       body,
