@@ -40,8 +40,8 @@ class Dashboard extends React.Component {
             {this.store.isFetching
               ? <PreviewLoading />
               : this.store.collections &&
-                  this.store.collections.map(collection => (
-                    <Collection key={collection.id} data={collection} />
+                  this.store.collections.map(data => (
+                    <Collection key={data.id} data={data} />
                   ))}
           </Flex>
         </CenteredContent>

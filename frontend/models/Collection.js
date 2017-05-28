@@ -1,12 +1,12 @@
 // @flow
-import { extendObservable, action, computed, runInAction } from 'mobx';
+import { extendObservable, action, runInAction } from 'mobx';
 import invariant from 'invariant';
 import _ from 'lodash';
 
 import ApiClient, { client } from 'utils/ApiClient';
 import stores from 'stores';
 import ErrorsStore from 'stores/ErrorsStore';
-import type { NavigationNode } from 'types';
+import type { NavigationNode, Document } from 'types';
 
 class Collection {
   createdAt: string;
@@ -15,6 +15,7 @@ class Collection {
   name: string;
   type: 'atlas' | 'journal';
   navigationTree: NavigationNode;
+  recentDocuments: Array<Document>;
   updatedAt: string;
   url: string;
 

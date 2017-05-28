@@ -1,31 +1,34 @@
 // @flow
-import React from 'react';
-import { observer } from 'mobx-react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+import type { Document } from 'types';
 import DocumentLink from './components/DocumentLink';
-
 import styles from './Collection.scss';
-// import classNames from 'classnames/bind';
-// const cx = classNames.bind(styles);
 
-@observer class Collection extends React.Component {
-  static propTypes = {
-    data: React.PropTypes.object.isRequired,
+type Data = {
+  url: string,
+  name: string,
+  recentDocuments: Array<Document>,
+};
+
+class Collection extends Component {
+  props: {
+    data: Data,
   };
 
   render() {
-    const data = this.props.data;
+    const { data } = this.props;
+    const hasRecentDocuments = data.recentDocuments.length > 0;
 
     return (
       <div className={styles.container}>
         <h2>
           <Link to={data.url} className={styles.atlasLink}>{data.name}</Link>
         </h2>
-        {data.recentDocuments.length > 0
-          ? data.recentDocuments.map(document => {
-              return <DocumentLink document={document} key={document.id} />;
-            })
+        {hasRecentDocuments
+          ? data.recentDocuments.map(document => (
+              <DocumentLink key={document.id} document={document} />
+            ))
           : <div className={styles.description}>
               No documents. Why not
               {' '}
