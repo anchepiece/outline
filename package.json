@@ -138,7 +138,7 @@
     "react": "15.3.2",
     "react-addons-css-transition-group": "15.3.2",
     "react-dom": "15.3.2",
-    "react-dropzone": "3.6.0",
+    "react-dropzone": "^3.13.1",
     "react-helmet": "3.1.0",
     "react-keydown": "^1.7.3",
     "react-portal": "^3.1.0",

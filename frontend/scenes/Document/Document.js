@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { withRouter, Prompt } from 'react-router';
 import { Flex } from 'reflexbox';
 
-import DocumentStore from './DocumentStore';
+import DocumentStore from 'stores/DocumentStore';
 import Breadcrumbs from './components/Breadcrumbs';
 import Menu from './components/Menu';
 import Editor from 'components/Editor';

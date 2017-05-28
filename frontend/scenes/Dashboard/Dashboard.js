@@ -6,6 +6,7 @@ import { Flex } from 'reflexbox';
 
 import DashboardStore from './DashboardStore';
 
+import DropToImport from 'components/DropToImport';
 import Layout from 'components/Layout';
 import Collection from 'components/Collection';
 import PreviewLoading from 'components/PreviewLoading';
@@ -34,18 +35,20 @@ class Dashboard extends React.Component {
 
   render() {
     return (
-      <Layout>
-        <CenteredContent>
-          <Flex column auto>
-            {this.store.isFetching
-              ? <PreviewLoading />
-              : this.store.collections &&
-                  this.store.collections.map(collection => (
-                    <Collection key={collection.id} data={collection} />
-                  ))}
-          </Flex>
-        </CenteredContent>
-      </Layout>
+      <DropToImport>
+        <Layout>
+          <CenteredContent>
+            <Flex column auto>
+              {this.store.isFetching
+                ? <PreviewLoading />
+                : this.store.collections &&
+                    this.store.collections.map(collection => (
+                      <Collection key={collection.id} data={collection} />
+                    ))}
+            </Flex>
+          </CenteredContent>
+        </Layout>
+      </DropToImport>
     );
   }
 }

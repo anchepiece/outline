@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import type { Document as DocumentType } from 'types';
 import DropdownMenu, { MenuItem, MoreIcon } from 'components/DropdownMenu';
-import DocumentStore from '../DocumentStore';
+import DocumentStore from 'stores/DocumentStore';
 
 type Props = {
   history: Object,
