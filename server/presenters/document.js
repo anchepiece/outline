@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { User, Document, View } from '../models';
 import presentUser from './user';
 import presentCollection from './collection';
+import cachedPresenter from './cachedPresenter';
 
 async function present(ctx: Object, document: Document, options: Object = {}) {
   options = {
@@ -10,7 +11,7 @@ async function present(ctx: Object, document: Document, options: Object = {}) {
     includeViews: false,
     ...options,
   };
-  ctx.cache.set(document.id, document);
+
   const data = {
     id: document.id,
     url: document.getUrl(),
@@ -49,7 +50,8 @@ async function present(ctx: Object, document: Document, options: Object = {}) {
     }).map(user => presentUser(ctx, user));
   }
 
+  console.log('data', data);
   return data;
 }
 
-export default present;
+export default cachedPresenter(present);

@@ -4,10 +4,10 @@ import debug from 'debug';
 const debugCache = debug('cache');
 
 export default function cache() {
-  return async function cacheMiddleware(ctx: Object, next: Function) {
+  return function cacheMiddleware(ctx: Object, next: Function) {
     ctx.cache = {};
 
-    ctx.cache.set = async (id, value) => {
+    ctx.cache.set = (id, value) => {
       ctx.cache[id] = value;
     };
 
@@ -16,7 +16,9 @@ export default function cache() {
         debugCache(`hit: ${id}`);
       } else {
         debugCache(`miss: ${id}`);
-        ctx.cache.set(id, await def());
+        const result = await def();
+        debugCache(`setting: ${id}`, result);
+        await ctx.cache.set(id, result);
       }
       return ctx.cache[id];
     };
