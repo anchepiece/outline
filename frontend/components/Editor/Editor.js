@@ -1,7 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Editor, Plain } from 'slate';
+import { Editor } from 'slate-react';
+import Plain from 'slate-plain-serializer';
 import keydown from 'react-keydown';
 import type { Document, State, Editor as EditorType } from './types';
 import getDataTransferFiles from 'utils/getDataTransferFiles';
@@ -75,9 +76,6 @@ type KeyData = {
 
   onChange = (state: State) => {
     this.setState({ state });
-  };
-
-  onDocumentChange = (document: Document, state: State) => {
     this.props.onChange(Markdown.serialize(state));
   };
 
@@ -195,7 +193,6 @@ type KeyData = {
             state={this.state.state}
             onKeyDown={this.onKeyDown}
             onChange={this.onChange}
-            onDocumentChange={this.onDocumentChange}
             onSave={this.props.onSave}
             readOnly={this.props.readOnly}
           />
