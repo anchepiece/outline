@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Editor } from 'slate-react';
+import type { state, change } from 'slate-prop-types';
 import Plain from 'slate-plain-serializer';
 import keydown from 'react-keydown';
-import type { Document, State, Editor as EditorType } from './types';
 import getDataTransferFiles from 'utils/getDataTransferFiles';
 import Flex from 'components/Flex';
 import ClickablePadding from './components/ClickablePadding';
@@ -18,7 +18,7 @@ import styled from 'styled-components';
 
 type Props = {
   text: string,
-  onChange: Function,
+  onChange: change => void,
   onSave: Function,
   onCancel: Function,
   onImageUploadStart: Function,
@@ -34,12 +34,12 @@ type KeyData = {
 
 @observer class MarkdownEditor extends Component {
   props: Props;
-  editor: EditorType;
+  editor: Editor;
   schema: Object;
   plugins: Array<Object>;
 
   state: {
-    state: State,
+    state: state,
   };
 
   constructor(props: Props) {
@@ -74,7 +74,7 @@ type KeyData = {
     }
   }
 
-  onChange = (state: State) => {
+  onChange = ({ state }: change) => {
     this.setState({ state });
     this.props.onChange(Markdown.serialize(state));
   };
@@ -95,16 +95,17 @@ type KeyData = {
 
   insertImageFile = async (file: window.File) => {
     const state = this.editor.getState();
-    let transform = state.transform();
+    const change = state.change();
 
-    transform = await insertImage(
-      transform,
-      file,
-      this.editor,
-      this.props.onImageUploadStart,
-      this.props.onImageUploadStop
+    this.editor.onChange(
+      await insertImage(
+        change,
+        file,
+        this.editor,
+        this.props.onImageUploadStart,
+        this.props.onImageUploadStop
+      )
     );
-    this.editor.onChange(transform.apply());
   };
 
   cancelEvent = (ev: SyntheticEvent) => {
@@ -137,37 +138,33 @@ type KeyData = {
   }
 
   // Handling of keyboard shortcuts within editor focus
-  onKeyDown = (ev: SyntheticKeyboardEvent, data: KeyData, state: State) => {
+  onKeyDown = (ev: SyntheticKeyboardEvent, data: KeyData, change: change) => {
     if (!data.isMeta) return;
 
     switch (data.key) {
       case 's':
         this.onSave(ev);
-        return state;
+        return change;
       case 'enter':
         this.onSaveAndExit(ev);
-        return state;
+        return change;
       case 'escape':
         this.onCancel();
-        return state;
+        return change;
       default:
     }
   };
 
   focusAtStart = () => {
     const state = this.editor.getState();
-    const transform = state.transform();
-    transform.collapseToStartOf(state.document);
-    transform.focus();
-    this.setState({ state: transform.apply() });
+    const change = state.change().collapseToStartOf(state.document).focus();
+    this.setState({ state: change.state });
   };
 
   focusAtEnd = () => {
     const state = this.editor.getState();
-    const transform = state.transform();
-    transform.collapseToEndOf(state.document);
-    transform.focus();
-    this.setState({ state: transform.apply() });
+    const change = state.change().collapseToEndOf(state.document).focus();
+    this.setState({ state: change.state });
   };
 
   render = () => {

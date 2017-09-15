@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import type { state, change } from 'slate-prop-types';
 import ToolbarButton from './ToolbarButton';
-import type { State } from '../../../types';
 import keydown from 'react-keydown';
 import Icon from 'components/Icon';
 import Flex from 'components/Flex';
@@ -11,10 +11,10 @@ import Flex from 'components/Flex';
 export default class LinkToolbar extends Component {
   input: HTMLElement;
   props: {
-    state: State,
+    state: state,
     link: Object,
-    onBlur: Function,
-    onChange: Function,
+    onBlur: () => void,
+    onChange: change => void,
   };
 
   onKeyDown = (ev: SyntheticKeyboardEvent & SyntheticInputEvent) => {
@@ -34,16 +34,15 @@ export default class LinkToolbar extends Component {
 
   save = (href: string) => {
     href = href.trim();
-    const transform = this.props.state.transform();
-    transform.unwrapInline('link');
+    const change = this.props.state.change();
+    change.unwrapInline('link');
 
     if (href) {
       const data = { href };
-      transform.wrapInline({ type: 'link', data });
+      change.wrapInline({ type: 'link', data });
     }
 
-    const state = transform.apply();
-    this.props.onChange(state);
+    this.props.onChange(change);
     this.input.blur();
   };
 

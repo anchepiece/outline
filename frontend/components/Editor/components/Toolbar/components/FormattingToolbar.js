@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import type { State } from '../../../types';
+import type { state, change } from 'slate-prop-types';
 import ToolbarButton from './ToolbarButton';
 import BoldIcon from 'components/Icon/BoldIcon';
 import CodeIcon from 'components/Icon/CodeIcon';
@@ -12,9 +12,9 @@ import BulletedListIcon from 'components/Icon/BulletedListIcon';
 
 export default class FormattingToolbar extends Component {
   props: {
-    state: State,
-    onChange: Function,
-    onCreateLink: Function,
+    state: state,
+    onChange: change => void,
+    onCreateLink: () => void,
   };
 
   /**
@@ -41,16 +41,16 @@ export default class FormattingToolbar extends Component {
     ev.preventDefault();
     let { state } = this.props;
 
-    state = state.transform().toggleMark(type).apply();
-    this.props.onChange(state);
+    const change = state.change().toggleMark(type);
+    this.props.onChange(change);
   };
 
   onClickBlock = (ev: SyntheticEvent, type: string) => {
     ev.preventDefault();
     let { state } = this.props;
 
-    state = state.transform().setBlock(type).apply();
-    this.props.onChange(state);
+    const change = state.change().setBlock(type);
+    this.props.onChange(change);
   };
 
   onCreateLink = (ev: SyntheticEvent) => {
@@ -58,8 +58,8 @@ export default class FormattingToolbar extends Component {
     ev.stopPropagation();
     let { state } = this.props;
     const data = { href: '' };
-    state = state.transform().wrapInline({ type: 'link', data }).apply();
-    this.props.onChange(state);
+    const change = state.change().wrapInline({ type: 'link', data });
+    this.props.onChange(change);
     this.props.onCreateLink();
   };
 
