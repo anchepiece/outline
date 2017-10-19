@@ -10,6 +10,7 @@ import ToolbarButton from './ToolbarButton';
 import DocumentResult from './DocumentResult';
 import type { State } from '../../../types';
 import DocumentsStore from 'stores/DocumentsStore';
+import { encode, decode } from '../../../urls';
 import keydown from 'react-keydown';
 import Icon from 'components/Icon';
 import Flex from 'components/Flex';
@@ -104,11 +105,11 @@ class LinkToolbar extends Component {
 
   openLink = () => {
     const href = this.props.link.data.get('href');
-    window.open(href, '_blank');
+    window.open(decode(href), '_blank');
   };
 
-  save = (href: string) => {
-    href = href.trim();
+  save = (url: string) => {
+    const href = encode(url);
     const transform = this.props.state.transform();
     transform.unwrapInline('link');
 

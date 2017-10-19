@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { Link as InternalLink } from 'react-router-dom';
+import { decode } from '../urls';
 import type { Props } from '../types';
 
 function getPathFromUrl(href: string) {
@@ -27,7 +28,7 @@ function isAtlasUrl(href: string) {
 }
 
 export default function Link({ attributes, node, children, readOnly }: Props) {
-  const href = node.data.get('href');
+  const href = decode(node.data.get('href'));
   const path = getPathFromUrl(href);
 
   if (isAtlasUrl(href) && readOnly) {
