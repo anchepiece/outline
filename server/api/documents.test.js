@@ -3,6 +3,7 @@ import TestServer from 'fetch-test-server';
 import app from '..';
 import { View, Star } from '../models';
 import { flushdb, seed } from '../test/support';
+import Document from '../models/Document';
 
 const server = new TestServer(app.callback());
 
@@ -39,6 +40,24 @@ describe('#documents.list', async () => {
 
     expect(res.status).toEqual(401);
     expect(body).toMatchSnapshot();
+  });
+});
+
+describe('#documents.revision', async () => {
+  it("should return document's revisions", async () => {
+    const { user, document } = await seed();
+    const res = await server.post('/api/documents.revisions', {
+      body: {
+        token: user.getJwtToken(),
+        id: document.id,
+      },
+    });
+    const body = await res.json();
+
+    expect(res.status).toEqual(200);
+    expect(body.data.length).toEqual(1);
+    expect(body.data[0].id).not.toEqual(document.id);
+    expect(body.data[0].title).toEqual(document.title);
   });
 });
 
@@ -88,6 +107,20 @@ describe('#documents.viewed', async () => {
     expect(res.status).toEqual(200);
     expect(body.data.length).toEqual(1);
     expect(body.data[0].id).toEqual(document.id);
+  });
+
+  it('should not return recently viewed but deleted documents', async () => {
+    const { user, document } = await seed();
+    await View.increment({ documentId: document.id, userId: user.id });
+    await document.destroy();
+
+    const res = await server.post('/api/documents.viewed', {
+      body: { token: user.getJwtToken() },
+    });
+    const body = await res.json();
+
+    expect(res.status).toEqual(200);
+    expect(body.data.length).toEqual(0);
   });
 
   it('should require authentication', async () => {
@@ -177,6 +210,49 @@ describe('#documents.unstar', async () => {
 
     expect(res.status).toEqual(401);
     expect(body).toMatchSnapshot();
+  });
+});
+
+describe('#documents.create', async () => {
+  it('should create as a new document', async () => {
+    const { user, collection } = await seed();
+    const res = await server.post('/api/documents.create', {
+      body: {
+        token: user.getJwtToken(),
+        collection: collection.id,
+        title: 'new document',
+        text: 'hello',
+      },
+    });
+    const body = await res.json();
+    const newDocument = await Document.findOne({
+      where: {
+        id: body.data.id,
+      },
+    });
+
+    expect(res.status).toEqual(200);
+    expect(newDocument.parentDocumentId).toBe(null);
+    expect(newDocument.collection.id).toBe(collection.id);
+  });
+
+  it('should create as a child', async () => {
+    const { user, document, collection } = await seed();
+    const res = await server.post('/api/documents.create', {
+      body: {
+        token: user.getJwtToken(),
+        collection: collection.id,
+        title: 'new document',
+        text: 'hello',
+        parentDocument: document.id,
+      },
+    });
+    const body = await res.json();
+
+    expect(res.status).toEqual(200);
+    expect(body.data.title).toBe('new document');
+    expect(body.data.collection.documents.length).toBe(2);
+    expect(body.data.collection.documents[1].children[0].id).toBe(body.data.id);
   });
 });
 

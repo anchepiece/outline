@@ -13,6 +13,7 @@ const definePlugin = new webpack.DefinePlugin({
   SLACK_REDIRECT_URI: JSON.stringify(process.env.SLACK_REDIRECT_URI),
   SLACK_KEY: JSON.stringify(process.env.SLACK_KEY),
   BASE_URL: JSON.stringify(process.env.URL),
+  BUGSNAG_KEY: JSON.stringify(process.env.BUGSNAG_KEY),
   DEPLOYMENT: JSON.stringify(process.env.DEPLOYMENT || 'hosted'),
 });
 
@@ -28,7 +29,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel',
         include: [
-          path.join(__dirname, 'frontend'),
+          path.join(__dirname, 'app'),
           path.join(__dirname, 'shared'),
         ],
       },
@@ -49,9 +50,9 @@ module.exports = {
     noParse: [new RegExp('node_modules/localforage/dist/localforage.js')],
   },
   resolve: {
-    root: path.join(__dirname, 'frontend'),
-    // you can now require('file') instead of require('file.json')
+    root: path.resolve(__dirname, 'app'),
     extensions: ['', '.js', '.json'],
+    alias: { shared: path.resolve(__dirname, 'shared') }
   },
   plugins: [
     definePlugin,

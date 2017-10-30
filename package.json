@@ -8,16 +8,16 @@
     "build:analyze": "NODE_ENV=production webpack --config webpack.config.prod.js --json | webpack-bundle-size-analyzer",
     "build": "npm run clean && npm run build:webpack",
     "start": "node index.js",
-    "dev": "NODE_ENV=development DEBUG=sql,cache,presenters ./node_modules/.bin/nodemon --watch server index.js",
+    "dev": "NODE_ENV=development DEBUG=sql,cache,presenters ./node_modules/.bin/nodemon --inspect --watch server index.js",
     "lint": "npm run lint:flow && npm run lint:js",
-    "lint:js": "eslint frontend",
+    "lint:js": "eslint app",
     "lint:flow": "flow",
     "deploy": "git push heroku master",
     "heroku-postbuild": "npm run build && npm run sequelize:migrate",
     "sequelize:create-migration": "sequelize migration:create",
     "sequelize:migrate": "sequelize db:migrate",
-    "test": "npm run test:frontend && npm run test:server",
-    "test:frontend": "jest",
+    "test": "npm run test:app && npm run test:server",
+    "test:app": "jest",
     "test:server": "jest --config=server/.jestconfig.json --runInBand --forceExit",
     "precommit": "lint-staged"
   },
@@ -30,7 +30,7 @@
   "jest": {
     "verbose": false,
     "roots": [
-      "frontend"
+      "app"
     ],
     "moduleNameMapper": {
       "^.*[.](s?css|css)$": "<rootDir>/__mocks__/styleMock.js",
@@ -45,7 +45,7 @@
       "node_modules"
     ],
     "modulePaths": [
-      "frontend"
+      "app"
     ],
     "setupFiles": [
       "<rootDir>/setupJest.js",
@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "@tommoor/slate-drop-or-paste-images": "0.5.1",
+    "aws-sdk": "^2.135.0",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "6.2.5",
@@ -77,7 +78,7 @@
     "babel-preset-react": "6.11.1",
     "babel-preset-react-hmre": "1.1.1",
     "babel-regenerator-runtime": "6.5.0",
-    "bcrypt": "^0.8.7",
+    "bcrypt": "1.0.3",
     "boundless-arrow-key-navigation": "^1.0.4",
     "boundless-popover": "^1.0.4",
     "bugsnag": "^1.7.0",
@@ -85,7 +86,6 @@
     "css-loader": "^0.28.7",
     "debug": "2.2.0",
     "dotenv": "^4.0.0",
-    "emoji-name-map": "1.1.2",
     "emoji-regex": "^6.5.1",
     "eslint": "^3.19.0",
     "eslint-config-react-app": "^0.6.2",
@@ -100,7 +100,6 @@
     "fbemitter": "^2.1.1",
     "file-loader": "0.9.0",
     "flow-typed": "^2.1.2",
-    "highlight.js": "9.4.0",
     "history": "3.0.0",
     "html-webpack-plugin": "2.17.0",
     "http-errors": "1.4.0",
@@ -108,7 +107,8 @@
     "imports-loader": "0.6.5",
     "invariant": "^2.2.2",
     "isomorphic-fetch": "2.2.1",
-    "js-tree": "1.1.0",
+    "js-cookie": "^2.1.4",
+    "js-search": "^1.4.2",
     "json-loader": "0.5.4",
     "jsonwebtoken": "7.0.1",
     "koa": "^2.2.0",
@@ -122,11 +122,10 @@
     "koa-mount": "^3.0.0",
     "koa-router": "7.0.1",
     "koa-sendfile": "2.0.0",
+    "koa-static": "^4.0.1",
     "localforage": "^1.5.0",
     "lodash": "^4.17.4",
     "lodash.orderby": "4.4.0",
-    "marked": "0.3.6",
-    "marked-sanitized": "^0.1.1",
     "mobx": "^3.1.9",
     "mobx-react": "^4.1.8",
     "mobx-react-devtools": "^4.2.11",
@@ -145,8 +144,7 @@
     "react-addons-css-transition-group": "15.3.2",
     "react-dom": "^15.6.1",
     "react-dropzone": "3.6.0",
-    "react-feather": "^1.0.7",
-    "react-helmet": "3.1.0",
+    "react-helmet": "^5.2.0",
     "react-keydown": "^1.7.3",
     "react-modal": "^2.2.1",
     "react-portal": "^3.1.0",
@@ -162,7 +160,7 @@
     "slate-collapse-on-escape": "^0.2.1",
     "slate-edit-code": "^0.10.2",
     "slate-edit-list": "^0.7.1",
-    "slate-markdown-serializer": "tommoor/slate-markdown-serializer",
+    "slate-markdown-serializer": "tommoor/slate-markdown-serializer#60931ab0582f1a0b1567dcbc473222806da84d15",
     "slate-paste-linkify": "^0.2.1",
     "slate-plain-serializer": "^0.1.0",
     "slate-prism": "^0.2.2",
@@ -173,7 +171,8 @@
     "string-hash": "^1.1.0",
     "style-loader": "^0.18.2",
     "styled-components": "^2.0.0",
-    "truncate-html": "https://github.com/jorilallo/truncate-html/tarball/master",
+    "styled-components-grid": "^1.0.0-preview.15",
+    "styled-normalize": "^2.2.1",
     "url-loader": "0.5.7",
     "uuid": "2.0.2",
     "validator": "5.2.0",
