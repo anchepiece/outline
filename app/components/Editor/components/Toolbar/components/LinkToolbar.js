@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import type { state, change } from 'slate-prop-types';
 import { observable, action } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { withRouter } from 'react-router';
@@ -8,7 +9,6 @@ import styled from 'styled-components';
 import ArrowKeyNavigation from 'boundless-arrow-key-navigation';
 import ToolbarButton from './ToolbarButton';
 import DocumentResult from './DocumentResult';
-import type { State } from '../../../types';
 import DocumentsStore from 'stores/DocumentsStore';
 import keydown from 'react-keydown';
 import CloseIcon from 'components/Icon/CloseIcon';
@@ -23,11 +23,11 @@ class LinkToolbar extends Component {
   firstDocument: HTMLElement;
 
   props: {
-    state: State,
+    state: state,
     link: Object,
     documents: DocumentsStore,
     onBlur: () => void,
-    onChange: State => void,
+    onChange: change => void,
   };
 
   @observable isEditing: boolean = false;

@@ -22,10 +22,10 @@ import styled from 'styled-components';
 type Props = {
   text: string,
   onChange: change => void,
-  onSave: Function,
-  onCancel: Function,
-  onImageUploadStart: Function,
-  onImageUploadStop: Function,
+  onSave: (redirect?: boolean) => *,
+  onCancel: () => void,
+  onImageUploadStart: () => void,
+  onImageUploadStop: () => void,
   emoji?: string,
   readOnly: boolean,
 };
@@ -74,7 +74,7 @@ type KeyData = {
     }
   }
 
-  onChange = change => {
+  onChange = (change: change) => {
     const { state } = change;
 
     if (this.editorState !== state) {
@@ -136,7 +136,7 @@ type KeyData = {
 
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.onSave({ redirect: false });
+    this.props.onSave(true);
   }
 
   @keydown('esc')
