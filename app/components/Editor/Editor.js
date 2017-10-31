@@ -14,8 +14,9 @@ import BlockInsert from './components/BlockInsert';
 import Placeholder from './components/Placeholder';
 import Contents from './components/Contents';
 import Markdown from './serializer';
-import createSchema from './schema';
 import createPlugins from './plugins';
+import renderMark from './marks';
+import renderNode from './nodes';
 import insertImage from './insertImage';
 import styled from 'styled-components';
 
@@ -38,14 +39,12 @@ type KeyData = {
 @observer class MarkdownEditor extends Component {
   props: Props;
   editor: Editor;
-  schema: Object;
   plugins: Array<Object>;
   @observable editorState: state;
 
   constructor(props: Props) {
     super(props);
 
-    this.schema = createSchema();
     this.plugins = createPlugins({
       onImageUploadStart: props.onImageUploadStart,
       onImageUploadStop: props.onImageUploadStop,
@@ -206,9 +205,10 @@ type KeyData = {
             innerRef={ref => (this.editor = ref)}
             placeholder="Start with a title…"
             bodyPlaceholder="…the rest is your canvas"
-            schema={this.schema}
             plugins={this.plugins}
             emoji={emoji}
+            renderNode={renderNode}
+            renderMark={renderMark}
             state={this.editorState}
             onKeyDown={this.onKeyDown}
             onChange={this.onChange}

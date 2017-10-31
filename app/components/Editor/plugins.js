@@ -2,7 +2,7 @@
 import DropOrPasteImages from '@tommoor/slate-drop-or-paste-images';
 import PasteLinkify from 'slate-paste-linkify';
 import CollapseOnEscape from 'slate-collapse-on-escape';
-import TrailingBlock from 'slate-trailing-block';
+// import TrailingBlock from 'slate-trailing-block';
 import EditCode from 'slate-edit-code';
 import Prism from 'slate-prism';
 import EditList from './plugins/EditList';
@@ -48,7 +48,7 @@ const createPlugins = ({ onImageUploadStart, onImageUploadStop }: Options) => {
       getSyntax: node => 'javascript',
     }),
     CollapseOnEscape({ toEdge: 'end' }),
-    TrailingBlock({ type: 'paragraph' }),
+    // TrailingBlock({ type: 'paragraph' }),
     KeyboardShortcuts(),
     MarkdownShortcuts(),
   ];
